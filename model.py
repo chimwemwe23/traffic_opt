@@ -25,9 +25,9 @@ DEFAULT_ROAD_LENGTH = 400                 # metres
 DEFAULT_DEMAND_CPH  = 180                 # cars/hour on external entry roads
 
 
-
+# ─────────────────────────────────────────────
 #  ROAD  (bidirectional, per-road length+speed)
-
+# ─────────────────────────────────────────────
 
 class Road:
     """
@@ -85,7 +85,7 @@ class Road:
         for arrive_at, cars in buf:
             (arrived := arrived + cars) if current_time >= arrive_at \
                 else still.append((arrive_at, cars))
-        
+        # Rewrite using simple loop (walrus not available in all Python 3.9)
         arrived, still = 0.0, []
         for arrive_at, cars in buf:
             if current_time >= arrive_at:
@@ -99,9 +99,9 @@ class Road:
         return arrived
 
 
-
+# ─────────────────────────────────────────────
 #  INTERSECTION
-
+# ─────────────────────────────────────────────
 
 class Intersection:
     """
@@ -131,7 +131,7 @@ class Intersection:
         self.queue_sum    = 0.0
         self.ticks        = 0
 
-    #Webster
+    # ── Webster ──────────────────────────────
 
     def flow_ratios(self):
         s_ns = self.SAT_FLOW * max(self.lanes[0], self.lanes[1])
@@ -156,7 +156,7 @@ class Intersection:
     def apply_uniform(self, green=30.0):
         self.green_times = [green, green]
 
-    # Tick
+    # ── Tick ─────────────────────────────────
 
     def tick(self, dt, incoming):
         """
@@ -210,7 +210,9 @@ class Intersection:
         return (self.cars_passed / sim_sec)*3600 if sim_sec else 0
 
 
+# ─────────────────────────────────────────────
 #  NETWORK
+# ─────────────────────────────────────────────
 
 class Network:
     """
@@ -236,7 +238,7 @@ class Network:
         self.default_speed_ms   = DEFAULT_SPEED_MS
         self.default_demand_cph = DEFAULT_DEMAND_CPH
 
-    #Intersections 
+    # ── Intersections ─────────────────────────
 
     def add_intersection(self, r, c):
         if (r, c) not in self.grid:
@@ -261,7 +263,7 @@ class Network:
         else:
             self.add_intersection(r, c)
 
-    # Roads (manually drawn)
+    # ── Roads (manually drawn) ────────────────
 
     def add_road(self, r1, c1, r2, c2, length_m=None, speed_ms=None, demand_cph=None):
         """
@@ -297,7 +299,7 @@ class Network:
     def _are_adjacent(self, r1, c1, r2, c2):
         return abs(r1-r2) + abs(c1-c2) == 1
 
-    # Entry roads (auto) 
+    # ── Entry roads (auto) ────────────────────
 
     def _rebuild_entry_roads(self, r, c):
         """
@@ -320,7 +322,7 @@ class Network:
                         self.default_demand_cph,
                     )
 
-    #Accessors
+    # ── Accessors ─────────────────────────────
 
     def get(self, r, c):
         return self.grid.get((r,c))
@@ -340,7 +342,7 @@ class Network:
     def _adj(self, r, c):
         return [(r-1,c),(r+1,c),(r,c-1),(r,c+1)]
 
-    #Simulation 
+    # ── Simulation ────────────────────────────
 
     def _incoming(self, r, c, t, dt):
         """Cars arriving at (r,c) this tick from each direction."""
@@ -414,7 +416,9 @@ class Network:
         return sum(i.avg_queue() for i in lst)/len(lst) if lst else 0
 
 
+# ─────────────────────────────────────────────
 #  SIMULATOR
+# ─────────────────────────────────────────────
 
 class SimResult:
     def __init__(self, name):
@@ -461,8 +465,9 @@ class Simulator:
         return self.run("uniform",duration,cb1), self.run("webster",duration,cb2)
 
 
-
+# ─────────────────────────────────────────────
 #  UTILITIES
+# ─────────────────────────────────────────────
 
 def _road_key(r1,c1,r2,c2):
     return (min((r1,c1),(r2,c2)), max((r1,c1),(r2,c2)))
