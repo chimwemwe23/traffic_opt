@@ -1,7 +1,5 @@
 """
 experiments.py
---------------
-Runs the three experiments of the report (no GUI needed):
 
   exp1  three-way comparison   uniform / Webster / Webster + green wave
   exp2  sensitivity analysis   NS:EW demand ratio 1, 1.5, 2, 3, 4
@@ -14,7 +12,6 @@ Usage
   python experiments.py exp3 --seeds 3     # 24-hour experiment (slowest)
   python experiments.py all --seeds 5
 
-Results (CSV tables + PNG charts) are written to the folder given by --out.
 All strategies use the SAME random seeds, so they see identical arrivals.
 """
 
