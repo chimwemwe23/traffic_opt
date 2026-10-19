@@ -1,8 +1,5 @@
 """
 experiments.py
---------------
-Runs the three experiments of the report (no GUI needed):
-
   exp1  three-way comparison   uniform / Webster / Webster + green wave
   exp2  sensitivity analysis   NS:EW demand ratio 1, 1.5, 2, 3, 4
   exp3  24-hour demand         uniform / fixed Webster plan / adaptive (15 min)
@@ -14,7 +11,6 @@ Usage
   python experiments.py exp3 --seeds 3     # 24-hour experiment (slowest)
   python experiments.py all --seeds 5
 
-Results (CSV tables + PNG charts) are written to the folder given by --out.
 All strategies use the SAME random seeds, so they see identical arrivals.
 """
 
@@ -31,7 +27,7 @@ import matplotlib.pyplot as plt
 
 from model import Network, Simulator, DAILY_PROFILE, demand_multiplier
 
-# ---- experiment parameters (Appendix A of the report) ---------------------
+#experiment parameters
 ROWS, COLS = 2, 3
 ROAD_LENGTH_M = 400
 SPEED_KMH = 60
@@ -91,9 +87,7 @@ def run_scenarios(ns, ew, seeds, duration=DURATION):
     return out
 
 
-# ===========================================================================
 # Experiment 1 - three-way comparison
-# ===========================================================================
 def exp1(seeds, out):
     print(f"\n== Experiment 1: three-way comparison  (NS={BASE_NS}, EW={BASE_EW} cars/h per entry road, "
           f"{len(seeds)} seeds, {DURATION}s) ==")
@@ -176,9 +170,8 @@ def exp1(seeds, out):
         print(f"  wrote {os.path.join(out, fname)}")
 
 
-# ===========================================================================
 # Experiment 2 - sensitivity to directional asymmetry
-# ===========================================================================
+
 def exp2(seeds, out):
     print(f"\n== Experiment 2: sensitivity (EW={BASE_EW}, NS = R x {BASE_EW}, {len(seeds)} seeds, {DURATION}s) ==")
     rows, curves = [], {"webster": [], "green_wave": [], "webster_random": []}
@@ -241,9 +234,7 @@ def exp2(seeds, out):
     print(f"  wrote {path}")
 
 
-# ===========================================================================
 # Experiment 3 - 24-hour demand
-# ===========================================================================
 def exp3(seeds, out):
     print(f"\n== Experiment 3: 24 h demand profile (NS={BASE_NS}, EW={BASE_EW} x m(t); {len(seeds)} seeds; "
           f"adaptive update every {UPDATE_INTERVAL//60} min) ==")
@@ -327,10 +318,8 @@ def exp3(seeds, out):
     fig.tight_layout(); fig.savefig(os.path.join(out, "fig7_daily_queue.png"), dpi=160); plt.close(fig)
     print(f"  wrote fig5_demand_profile.png, fig6_adaptive_plan.png, fig7_daily_queue.png in {out}")
 
-
-# ===========================================================================
 # Self-tests (report section 3.3 checklist)
-# ===========================================================================
+
 def selftest():
     ok_all = True
 
